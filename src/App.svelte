@@ -2,13 +2,13 @@
   import { onMount } from "svelte";
 
   import * as Tone from "tone";
-
+  import WaveSurfer from "wavesurfer.js";
   import type { TrackModel } from "./models/track";
 
   import MasterTrack from "./MasterTrack.svelte";
   import TransportControls from "./TransportControls.svelte";
   import TracksManager from "./TracksManager.svelte";
-  import { songLength } from "./stores";
+  import { songLength, playbackPosition } from "./stores";
 
   let tracks: TrackModel[] = [];
   let tracksLoaded: Promise<any> = Promise.resolve();
@@ -25,6 +25,27 @@
 
     tracksLoaded = Promise.all(songTracks.map((t) => t.trackLoaded));
     tracks = [...songTracks.map((t) => t.channel), clickTrack];
+
+    fetch("/songs/take-stock-of-what-i-have/Sopran.mp3")
+      .then((res) => res.blob())
+      .then((res) => {
+        const wavesurfer = WaveSurfer.create({
+          container: "#waveform",
+          scrollParent: true,
+          normalize: true,
+          responsive: true,
+        });
+        wavesurfer.loadBlob(res);
+
+        wavesurfer.on("seek", (e) => {
+          playbackPosition.set(e * $songLength);
+        });
+
+        Tone.Transport.scheduleRepeat(
+          (s) => wavesurfer.seekAndCenter($playbackPosition / $songLength),
+          "32n"
+        );
+      });
   }
 
   function createSongTracks() {
