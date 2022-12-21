@@ -29,11 +29,11 @@
 
   function createSongTracks() {
     const trackUrls = [
-      "/songs/take-stock-of-what-i-have/Sopran.mp3",
-      "/songs/take-stock-of-what-i-have/Mezzo.mp3",
-      "/songs/take-stock-of-what-i-have/Alt.mp3",
-      "/songs/take-stock-of-what-i-have/Tenor.mp3",
-      "/songs/take-stock-of-what-i-have/Bass.mp3",
+      "songs/take-stock-of-what-i-have/Sopran.mp3",
+      "songs/take-stock-of-what-i-have/Mezzo.mp3",
+      "songs/take-stock-of-what-i-have/Alt.mp3",
+      "songs/take-stock-of-what-i-have/Tenor.mp3",
+      "songs/take-stock-of-what-i-have/Bass.mp3",
     ];
 
     const songTracks = trackUrls.map((trackUrl) => {
@@ -53,7 +53,7 @@
 
       return {
         channel: {
-          name: trackUrl.split("/")[3].replace(".mp3", ""),
+          name: trackUrl.split("/")[2].replace(".mp3", ""),
           channel,
         },
         trackLoaded,
