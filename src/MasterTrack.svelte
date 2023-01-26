@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Card, { Content } from "@smui/card";
+
   import type { Volume } from "tone";
 
   import VolumeControls from "./VolumeControls.svelte";
@@ -7,18 +9,20 @@
 </script>
 
 <article>
-  <header>
-    <h2>Master</h2>
-  </header>
-  <section>
-    <VolumeControls {volume} />
-  </section>
+  <Card>
+    <Content>
+      <header>
+        <h2>Master</h2>
+      </header>
+      <section>
+        <VolumeControls {volume} />
+      </section>
+    </Content>
+  </Card>
 </article>
 
 <style>
   article {
-    border: 1px solid black;
     margin-top: 1rem;
-    padding: 0.5rem;
   }
 </style>

@@ -1,4 +1,5 @@
 <script>
+  import IconButton from "@smui/icon-button";
   import {
     songLength,
     songLengthReadble,
@@ -28,15 +29,17 @@
 
 <article>
   {#await tracksLoaded}
-    <button disabled>Song lädt</button>
+    <IconButton class="material-icons" disabled>hourglass_top</IconButton>
   {:then}
     {#if !$isPlaying}
-      <button on:click={play}>Play</button>
+      <IconButton class="material-icons" on:click={play}>play_arrow</IconButton>
     {:else}
-      <button on:click={pause}>Pause</button>
+      <IconButton class="material-icons" on:click={pause}>pause</IconButton>
     {/if}
   {/await}
-  <button disabled={!$isPlaying} on:click={stop}>Stop</button>
+  <IconButton class="material-icons" disabled={!$isPlaying} on:click={stop}
+    >stop</IconButton
+  >
 
   <p>{$playbackPositionReadble}</p>
   <input

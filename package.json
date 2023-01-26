@@ -10,6 +10,10 @@
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
+    "@smui/button": "^6.1.4",
+    "@smui/card": "^6.1.4",
+    "@smui/icon-button": "^6.1.4",
+    "@smui/slider": "^6.1.4",
     "@sveltejs/vite-plugin-svelte": "^2.0.0",
     "@tsconfig/svelte": "^3.0.0",
     "prettier": "2.8.3",
@@ -20,6 +24,7 @@
     "vite": "^4.0.0"
   },
   "dependencies": {
+    "svelte-material-ui": "^6.1.4",
     "tone": "^14.7.77"
   }
 }
