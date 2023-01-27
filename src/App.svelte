@@ -3,7 +3,13 @@
 
   import * as Tone from "tone";
 
-  import type { TrackModel } from "./models/track";
+  import type {
+    TrackModel,
+    Song,
+    TrackLocator,
+    SongIndex,
+    SongLocator,
+  } from "./models";
 
   import MasterTrack from "./MasterTrack.svelte";
   import TransportControls from "./TransportControls.svelte";
@@ -12,34 +18,47 @@
 
   let tracks: TrackModel[] = [];
   let tracksLoaded: Promise<any> = Promise.resolve();
+  let song: Song;
 
   const masterVolume = new Tone.Volume().connect(
     new Tone.Limiter(0).toDestination()
   );
 
-  function initializePlayer() {
-    Tone.Transport.set({ bpm: 86 });
+  async function initializePlayer() {
+    const songIndex = await getSongIndex();
+    song = await getSong(songIndex[0]);
 
-    const songTracks = createSongTracks();
+    const trackLocators: TrackLocator[] = song.tracks.map((loc) => ({
+      ...loc,
+      url: `songs/${songIndex[0].url}/${loc.url}`,
+    }));
+
+    Tone.Transport.set({ bpm: song.tempo });
+
+    const songTracks = createSongTracks(trackLocators);
     const clickTrack = createClickTrack();
 
     tracksLoaded = Promise.all(songTracks.map((t) => t.trackLoaded));
     tracks = [...songTracks.map((t) => t.channel), clickTrack];
   }
 
-  function createSongTracks() {
-    const trackUrls = [
-      "songs/take-stock-of-what-i-have/Sopran.mp3",
-      "songs/take-stock-of-what-i-have/Mezzo.mp3",
-      "songs/take-stock-of-what-i-have/Alt.mp3",
-      "songs/take-stock-of-what-i-have/Tenor.mp3",
-      "songs/take-stock-of-what-i-have/Bass.mp3",
-    ];
+  function getSongIndex(): Promise<SongIndex> {
+    return fetch("songs/index.json").then(
+      (res) => res.json() as Promise<SongIndex>
+    );
+  }
 
-    const songTracks = trackUrls.map((trackUrl) => {
+  function getSong(songLocator: SongLocator): Promise<Song> {
+    return fetch(`songs/${songLocator.url}/index.json`).then(
+      (res) => res.json() as Promise<Song>
+    );
+  }
+
+  function createSongTracks(trackLocators: TrackLocator[]) {
+    const songTracks = trackLocators.map((locator) => {
       const channel = new Tone.Channel().connect(masterVolume);
       const trackLoaded = new Promise<void>((resolve) => {
-        const player = new Tone.Player(trackUrl, () => {
+        const player = new Tone.Player(locator.url, () => {
           resolve();
           songLength.set(player.buffer.duration);
         })
@@ -53,7 +72,7 @@
 
       return {
         channel: {
-          name: trackUrl.split("/")[2].replace(".mp3", ""),
+          name: locator.name,
           channel,
         },
         trackLoaded,
@@ -80,6 +99,9 @@
   onMount(initializePlayer);
 </script>
 
+{#if song}
+  <h1>{song.name}</h1>
+{/if}
 <TracksManager {tracks} />
 <MasterTrack volume={masterVolume} />
 <TransportControls {tracksLoaded} />
