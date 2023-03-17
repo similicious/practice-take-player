@@ -11,9 +11,9 @@
     SongLocator,
   } from "./models";
 
-  import MasterTrack from "./MasterTrack.svelte";
   import TransportControls from "./TransportControls.svelte";
   import TracksManager from "./TracksManager.svelte";
+  import Track from "./Track.svelte";
   import { songLength } from "./stores";
   import { createChannelStore } from "./stores/track-state";
 
@@ -25,7 +25,11 @@
     new Tone.Limiter(0).toDestination()
   );
 
-  const masterChannelStore = createChannelStore(masterChannel);
+  const masterTrack: TrackModel = {
+    name: "Master",
+    channel: masterChannel,
+    channelStore: createChannelStore(masterChannel),
+  };
 
   async function initializePlayer() {
     const songIndex = await getSongIndex();
@@ -115,5 +119,5 @@
   <h1>{song.name}</h1>
 {/if}
 <TracksManager {tracks} />
-<MasterTrack channelStore={masterChannelStore} />
+<Track track={masterTrack} hideMuteSolo={true} />
 <TransportControls {tracksLoaded} />
