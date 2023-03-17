@@ -45,7 +45,9 @@ class PlaybackPostionStore
 export const playbackPosition = new PlaybackPostionStore();
 export const playbackPostitionBars = derived(playbackPosition, (pos) => {
   const [measure, beat] = Tone.Time(pos).toBarsBeatsSixteenths().split(":");
-  return `${Number(measure) + 1}:${Number(beat) + 1}`;
+  const measureBaseOne = String(Number(measure) + 1).padStart(3, "0");
+  const beatBaseOne = String(Number(beat) + 1).padStart(2, "0");
+  return `${measureBaseOne}:${beatBaseOne}`;
 });
 export const playbackPositionReadble = derived(playbackPosition, (p) =>
   formatDuration(p)
