@@ -1,5 +1,7 @@
 <script>
   import IconButton from "@smui/icon-button";
+  import Slider from "@smui/slider";
+
   import {
     songLength,
     songLengthReadble,
@@ -42,12 +44,14 @@
   >
 
   <p>{$playbackPositionReadble}</p>
-  <input
-    type="range"
+
+  <Slider
     bind:value={$playbackPosition}
-    min="0"
+    min={0}
     max={$songLength}
+    style="flex: 1"
   />
+
   <p>{$songLengthReadble}</p>
   <p>{$playbackPostitionBars}</p>
 </article>
