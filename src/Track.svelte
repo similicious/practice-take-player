@@ -1,5 +1,7 @@
 <script lang="ts">
   import Card, { Content } from "@smui/card";
+  import IconButton, { Icon } from "@smui/icon-button";
+
   import type { TrackModel } from "./models/track";
 
   import VolumeControls from "./VolumeControls.svelte";
@@ -19,21 +21,29 @@
         <VolumeControls channelStore={track.channelStore} />
 
         {#if !hideMuteSolo}
-          <label for={`mute_${track.name}`}>Mute</label>
-          <input
-            id={`mute_${track.name}`}
-            type="checkbox"
-            on:change={() =>
-              $channelStore.mute
+          <IconButton
+            on:click={() =>
+              $channelStore.muted
                 ? track.channelStore.unmute()
                 : track.channelStore.mute()}
-          />
-          <label for={`solo_${track.name}`}>Solo</label>
-          <input
-            id={`solo_${track.name}`}
-            type="checkbox"
-            bind:checked={channel.solo}
-          />
+            toggle
+            :pressed={$channelStore.muted}
+          >
+            <Icon class="material-icons">volume_mute</Icon>
+            <Icon class="material-icons" on>volume_off</Icon>
+          </IconButton>
+
+          <IconButton
+            on:click={() =>
+              $channelStore.soloed
+                ? track.channelStore.unsolo()
+                : track.channelStore.solo()}
+            toggle
+            :pressed={$channelStore.soloed}
+          >
+            <Icon class="material-icons">groups_2</Icon>
+            <Icon class="material-icons" on>person</Icon>
+          </IconButton>
         {/if}
       </section>
     </Content>
@@ -47,6 +57,7 @@
 
   section {
     display: flex;
+    gap: 0.25rem;
     align-items: center;
   }
 </style>
