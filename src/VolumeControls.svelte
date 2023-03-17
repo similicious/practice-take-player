@@ -1,31 +1,21 @@
 <script lang="ts">
   import Slider from "@smui/slider";
-  import type { Channel } from "tone";
-  export let volume: Pick<Channel, "volume">;
+  import type { ChannelStore } from "./stores/track-state";
+  export let channelStore: ChannelStore;
 </script>
 
-<!-- 
 <Slider
-  bind:value={volume.volume.value}
+  value={$channelStore.volume}
   max={0}
   min={-42}
   step={1}
-  disabled={volume.volume.value === -Infinity}
-  style="flex: 1"
-/> -->
-
-<input
-  type="range"
-  bind:value={volume.volume.value}
-  max="0"
-  min="-42"
-  step="1"
-  disabled={volume.volume.value === -Infinity}
+  on:SMUISlider:input={(e) => channelStore.setVolume(e.detail.value)}
+  disabled={$channelStore.volume === -Infinity}
   style="flex: 1"
 />
 
-{#if volume.volume.value === -Infinity}
+{#if $channelStore.volume === -Infinity}
   -&infin;
 {:else}
-  {Math.round(volume.volume.value)} dB
+  {Math.round($channelStore.volume)} dB
 {/if}

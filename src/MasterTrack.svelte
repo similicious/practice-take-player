@@ -1,11 +1,11 @@
 <script lang="ts">
   import Card, { Content } from "@smui/card";
 
-  import type { Volume } from "tone";
+  import type { ChannelStore } from "./stores/track-state";
 
   import VolumeControls from "./VolumeControls.svelte";
 
-  export let volume: Volume;
+  export let channelStore: ChannelStore;
 </script>
 
 <article>
@@ -15,7 +15,7 @@
         <h2>Master</h2>
       </header>
       <section>
-        <VolumeControls {volume} />
+        <VolumeControls {channelStore} />
       </section>
     </Content>
   </Card>
@@ -24,5 +24,10 @@
 <style>
   article {
     margin-top: 1rem;
+  }
+
+  section {
+    display: flex;
+    align-items: center;
   }
 </style>

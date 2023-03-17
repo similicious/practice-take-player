@@ -15,14 +15,17 @@
   import TransportControls from "./TransportControls.svelte";
   import TracksManager from "./TracksManager.svelte";
   import { songLength } from "./stores";
+  import { createChannelStore } from "./stores/track-state";
 
   let tracks: TrackModel[] = [];
   let tracksLoaded: Promise<any> = Promise.resolve();
   let song: Song;
 
-  const masterVolume = new Tone.Volume().connect(
+  const masterChannel = new Tone.Channel().connect(
     new Tone.Limiter(0).toDestination()
   );
+
+  const masterChannelStore = createChannelStore(masterChannel);
 
   async function initializePlayer() {
     const songIndex = await getSongIndex();
@@ -56,7 +59,7 @@
 
   function createSongTracks(trackLocators: TrackLocator[]) {
     const songTracks = trackLocators.map((locator) => {
-      const channel = new Tone.Channel().connect(masterVolume);
+      const channel = new Tone.Channel().connect(masterChannel);
       const trackLoaded = new Promise<void>((resolve) => {
         const player = new Tone.Player(locator.url, () => {
           resolve();
@@ -70,11 +73,14 @@
         player.connect(channel);
       });
 
+      const track: TrackModel = {
+        name: locator.name,
+        channel,
+        channelStore: createChannelStore(channel),
+      };
+
       return {
-        channel: {
-          name: locator.name,
-          channel,
-        },
+        channel: track,
         trackLoaded,
       };
     });
@@ -85,14 +91,20 @@
   function createClickTrack(): TrackModel {
     const clickChannel = new Tone.Channel()
       .set({ volume: -18 })
-      .connect(masterVolume);
-    const clickTrack: TrackModel = { name: "Metronom", channel: clickChannel };
+      .connect(masterChannel);
+
     const clickOsc = new Tone.Oscillator().connect(clickChannel).start();
 
-    Tone.Transport.scheduleRepeat((time) => {
-      clickOsc.start(time).stop(time + 0.05);
-    }, "4n");
+    const loop = new Tone.Loop(
+      (time) => clickOsc.start(time).stop(time + 0.05),
+      "4n"
+    ).start(0);
 
+    const clickTrack: TrackModel = {
+      name: "Metronom",
+      channel: clickChannel,
+      channelStore: createChannelStore(clickChannel),
+    };
     return clickTrack;
   }
 
@@ -103,5 +115,5 @@
   <h1>{song.name}</h1>
 {/if}
 <TracksManager {tracks} />
-<MasterTrack volume={masterVolume} />
+<MasterTrack channelStore={masterChannelStore} />
 <TransportControls {tracksLoaded} />
