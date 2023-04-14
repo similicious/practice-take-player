@@ -41,7 +41,7 @@
 
     const trackLocators: TrackLocator[] = song.tracks.map((loc) => ({
       ...loc,
-      url: `songs/${songIndex[0].url}/${loc.url}`,
+      url: `assets/songs/${songIndex[0].url}/${loc.url}`,
     }));
 
     Transport.set({ bpm: song.tempo });
@@ -54,13 +54,13 @@
   }
 
   function getSongIndex(): Promise<SongIndex> {
-    return fetch("songs/index.json").then(
+    return fetch("assets/songs/index.json").then(
       (res) => res.json() as Promise<SongIndex>
     );
   }
 
   function getSong(songLocator: SongLocator): Promise<Song> {
-    return fetch(`songs/${songLocator.url}/index.json`).then(
+    return fetch(`assets/songs/${songLocator.url}/index.json`).then(
       (res) => res.json() as Promise<Song>
     );
   }
