@@ -70,8 +70,4 @@
     align-items: center;
     gap: 0.5rem;
   }
-
-  input {
-    flex: 1;
-  }
 </style>
