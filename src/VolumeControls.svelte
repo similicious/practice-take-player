@@ -1,7 +1,6 @@
 <script lang="ts">
   import Slider from "@smui/slider";
-  import type { MuteStore } from "./stores/mute-state";
-  import type { VolumeStore } from "./stores/volume-state";
+  import type { MuteStore, VolumeStore } from "./stores";
   export let volume: VolumeStore;
   export let mute: MuteStore;
 </script>

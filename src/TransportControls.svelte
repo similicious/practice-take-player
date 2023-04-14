@@ -3,12 +3,12 @@
   import Slider from "@smui/slider";
 
   import {
-    songLength,
-    songLengthReadble,
+    isPlaying,
     playbackPosition,
     playbackPositionReadble,
     playbackPostitionBars,
-    isPlaying,
+    songLength,
+    songLengthReadble,
   } from "./stores";
 
   import * as Tone from "tone";

@@ -1,12 +1,10 @@
 <script lang="ts">
   import Card, { Content } from "@smui/card";
   import IconButton, { Icon } from "@smui/icon-button";
-
-  import type { TrackModel } from "./models/track";
+  import type { Channel } from "tone";
 
   import VolumeControls from "./VolumeControls.svelte";
   import type { MuteStore, VolumeStore } from "./stores";
-  import type { Channel } from "tone";
 
   export let name: string;
   export let volume: VolumeStore;

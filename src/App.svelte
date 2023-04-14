@@ -1,5 +1,14 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import {
+    Channel,
+    Limiter,
+    Loop,
+    Oscillator,
+    Player,
+    Transport,
+    Volume,
+  } from "tone";
 
   import type {
     ChannelLight,
@@ -10,19 +19,10 @@
     TrackModel,
   } from "./models";
 
-  import {
-    Channel,
-    Volume,
-    Limiter,
-    Transport,
-    Player,
-    Oscillator,
-    Loop,
-  } from "tone";
+  import Track from "./Track.svelte";
   import TracksManager from "./TracksManager.svelte";
   import TransportControls from "./TransportControls.svelte";
-  import { songLength, createMuteStore, createVolumeStore } from "./stores";
-  import Track from "./Track.svelte";
+  import { createMuteStore, createVolumeStore, songLength } from "./stores";
 
   let tracks: TrackModel[] = [];
   let tracksLoaded: Promise<any> = Promise.resolve();
