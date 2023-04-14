@@ -5,10 +5,14 @@
   import type { TrackModel } from "./models/track";
 
   import VolumeControls from "./VolumeControls.svelte";
+  import type { MuteStore, VolumeStore } from "./stores";
+  import type { Channel } from "tone";
 
+  export let name: string;
+  export let volume: VolumeStore;
+  export let mute: MuteStore;
+  export let channel: Channel;
   export let hideMuteSolo = false;
-  export let track: TrackModel;
-  $: ({ name, mute, volume, channel } = track);
 </script>
 
 <article>

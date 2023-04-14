@@ -5,5 +5,5 @@
 </script>
 
 {#each tracks as track (track.name)}
-  <Track {track} />
+  <Track {...track} />
 {/each}

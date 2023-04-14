@@ -130,5 +130,5 @@
   <h1>{song.name}</h1>
 {/if}
 <TracksManager {tracks} />
-<Track track={masterTrack} hideMuteSolo={true} />
+<Track {...masterTrack} hideMuteSolo={true} />
 <TransportControls {tracksLoaded} />
