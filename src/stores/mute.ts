@@ -1,6 +1,6 @@
 import { writable, type Updater, type Writable } from "svelte/store";
 import type { Volume } from "tone";
-import type { VolumeStore } from "./volume-state";
+import type { VolumeStore } from "./volume";
 
 export type MuteStore = Writable<boolean>;
 
