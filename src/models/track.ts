@@ -1,8 +1,10 @@
-import type { Channel, Player } from "tone";
-import type { ChannelStore } from "../stores/track-state";
+import type { Channel } from "tone";
+import type { MuteStore } from "../stores/mute-state";
+import type { VolumeStore } from "../stores/volume-state";
 
 export interface TrackModel {
   name: string;
   channel: Channel;
-  channelStore: ChannelStore;
+  volume: VolumeStore;
+  mute: MuteStore;
 }

@@ -1,35 +1,32 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  import * as Tone from "tone";
-
   import type {
-    TrackModel,
     Song,
-    TrackLocator,
     SongIndex,
     SongLocator,
+    TrackLocator,
+    TrackModel,
   } from "./models";
 
-  import TransportControls from "./TransportControls.svelte";
+  import {
+    Channel,
+    Volume,
+    Limiter,
+    Transport,
+    Player,
+    Oscillator,
+    Loop,
+  } from "tone";
   import TracksManager from "./TracksManager.svelte";
-  import Track from "./Track.svelte";
-  import { songLength } from "./stores";
-  import { createChannelStore } from "./stores/track-state";
+  import TransportControls from "./TransportControls.svelte";
+  import { songLength, createMuteStore, createVolumeStore } from "./stores";
 
   let tracks: TrackModel[] = [];
   let tracksLoaded: Promise<any> = Promise.resolve();
   let song: Song;
 
-  const masterChannel = new Tone.Channel().connect(
-    new Tone.Limiter(0).toDestination()
-  );
-
-  const masterTrack: TrackModel = {
-    name: "Master",
-    channel: masterChannel,
-    channelStore: createChannelStore(masterChannel),
-  };
+  const masterVolume = new Volume().connect(new Limiter(0).toDestination());
 
   async function initializePlayer() {
     const songIndex = await getSongIndex();
@@ -40,7 +37,7 @@
       url: `songs/${songIndex[0].url}/${loc.url}`,
     }));
 
-    Tone.Transport.set({ bpm: song.tempo });
+    Transport.set({ bpm: song.tempo });
 
     const songTracks = createSongTracks(trackLocators);
     const clickTrack = createClickTrack();
@@ -63,9 +60,9 @@
 
   function createSongTracks(trackLocators: TrackLocator[]) {
     const songTracks = trackLocators.map((locator) => {
-      const channel = new Tone.Channel().connect(masterChannel);
+      const channel = new Channel().connect(masterVolume);
       const trackLoaded = new Promise<void>((resolve) => {
-        const player = new Tone.Player(locator.url, () => {
+        const player = new Player(locator.url, () => {
           resolve();
           songLength.set(player.buffer.duration);
         })
@@ -80,7 +77,7 @@
       const track: TrackModel = {
         name: locator.name,
         channel,
-        channelStore: createChannelStore(channel),
+        ...createVolumeAndMuteStore(channel),
       };
 
       return {
@@ -92,14 +89,21 @@
     return songTracks;
   }
 
+  function createVolumeAndMuteStore(channel: Channel) {
+    const volume = createVolumeStore(channel as unknown as Volume);
+    const mute = createMuteStore(volume, channel as unknown as Volume);
+
+    return { volume, mute };
+  }
+
   function createClickTrack(): TrackModel {
-    const clickChannel = new Tone.Channel()
+    const clickChannel = new Channel()
       .set({ volume: -18 })
-      .connect(masterChannel);
+      .connect(masterVolume);
 
-    const clickOsc = new Tone.Oscillator().connect(clickChannel).start();
+    const clickOsc = new Oscillator().connect(clickChannel).start();
 
-    const loop = new Tone.Loop(
+    const loop = new Loop(
       (time) => clickOsc.start(time).stop(time + 0.05),
       "4n"
     ).start(0);
@@ -107,7 +111,7 @@
     const clickTrack: TrackModel = {
       name: "Metronom",
       channel: clickChannel,
-      channelStore: createChannelStore(clickChannel),
+      ...createVolumeAndMuteStore(clickChannel),
     };
     return clickTrack;
   }
@@ -119,5 +123,5 @@
   <h1>{song.name}</h1>
 {/if}
 <TracksManager {tracks} />
-<Track track={masterTrack} hideMuteSolo={true} />
+<!-- <Track track={masterTrack} hideMuteSolo={true} /> -->
 <TransportControls {tracksLoaded} />

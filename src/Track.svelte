@@ -8,7 +8,7 @@
 
   export let hideMuteSolo = false;
   export let track: TrackModel;
-  $: ({ channel, channelStore, name } = track);
+  $: ({ name, mute, volume, channel } = track);
 </script>
 
 <article>
@@ -18,28 +18,18 @@
         <h2>{name}</h2>
       </header>
       <section>
-        <VolumeControls channelStore={track.channelStore} />
+        <VolumeControls {volume} {mute} />
 
         {#if !hideMuteSolo}
-          <IconButton
-            on:click={() =>
-              $channelStore.muted
-                ? track.channelStore.unmute()
-                : track.channelStore.mute()}
-            toggle
-            :pressed={$channelStore.muted}
-          >
-            <Icon class="material-icons">volume_mute</Icon>
+          <IconButton toggle bind:pressed={$mute}>
+            <Icon class="material-icons">volume_up</Icon>
             <Icon class="material-icons" on>volume_off</Icon>
           </IconButton>
 
           <IconButton
-            on:click={() =>
-              $channelStore.soloed
-                ? track.channelStore.unsolo()
-                : track.channelStore.solo()}
+            on:click={() => (channel.solo = !channel.solo)}
             toggle
-            :pressed={$channelStore.soloed}
+            :pressed={channel.solo}
           >
             <Icon class="material-icons">groups_2</Icon>
             <Icon class="material-icons" on>person</Icon>
