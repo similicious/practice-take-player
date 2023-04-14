@@ -1,30 +1,30 @@
 import { writable, type Updater, type Writable } from "svelte/store";
-import type { Volume } from "tone";
 import type { VolumeStore } from "./volume";
+import type { ChannelLight } from "../models";
 
 export type MuteStore = Writable<boolean>;
 
 export function createMuteStore(
   volumeStore: VolumeStore,
-  volume: Volume
+  channel: ChannelLight
 ): MuteStore {
-  const { set, subscribe } = writable(volume.mute);
+  const { set, subscribe } = writable(channel.mute);
 
-  let unmutedVolume = volume.volume.value;
+  let unmutedVolume = channel.volume.value;
 
   const setMute = (muted: boolean) => {
     // Save volume before mute
     if (muted) {
-      unmutedVolume = Math.round(volume.volume.value);
+      unmutedVolume = Math.round(channel.volume.value);
     }
 
-    volume.mute = muted;
-    volumeStore.set(muted ? volume.volume.value : unmutedVolume);
+    channel.mute = muted;
+    volumeStore.set(muted ? channel.volume.value : unmutedVolume);
     set(muted);
   };
 
   const updateMute = (updater: Updater<boolean>) => {
-    const newValue = updater(volume.mute);
+    const newValue = updater(channel.mute);
     setMute(newValue);
   };
 

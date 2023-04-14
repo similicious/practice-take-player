@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
 
   import type {
+    ChannelLight,
     Song,
     SongIndex,
     SongLocator,
@@ -21,12 +22,18 @@
   import TracksManager from "./TracksManager.svelte";
   import TransportControls from "./TransportControls.svelte";
   import { songLength, createMuteStore, createVolumeStore } from "./stores";
+  import Track from "./Track.svelte";
 
   let tracks: TrackModel[] = [];
   let tracksLoaded: Promise<any> = Promise.resolve();
   let song: Song;
 
   const masterVolume = new Volume().connect(new Limiter(0).toDestination());
+  const masterTrack: TrackModel = {
+    name: "Master",
+    channel: null,
+    ...createVolumeAndMuteStore(masterVolume),
+  };
 
   async function initializePlayer() {
     const songIndex = await getSongIndex();
@@ -89,9 +96,9 @@
     return songTracks;
   }
 
-  function createVolumeAndMuteStore(channel: Channel) {
-    const volume = createVolumeStore(channel as unknown as Volume);
-    const mute = createMuteStore(volume, channel as unknown as Volume);
+  function createVolumeAndMuteStore(channel: ChannelLight) {
+    const volume = createVolumeStore(channel);
+    const mute = createMuteStore(volume, channel);
 
     return { volume, mute };
   }
@@ -123,5 +130,5 @@
   <h1>{song.name}</h1>
 {/if}
 <TracksManager {tracks} />
-<!-- <Track track={masterTrack} hideMuteSolo={true} /> -->
+<Track track={masterTrack} hideMuteSolo={true} />
 <TransportControls {tracksLoaded} />

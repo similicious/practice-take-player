@@ -1,18 +1,18 @@
 import { writable, type Updater, type Writable } from "svelte/store";
-import type { Volume } from "tone";
+import type { ChannelLight } from "../models";
 
 export type VolumeStore = Writable<number>;
 
-export function createVolumeStore(volume: Volume): VolumeStore {
-  const { set, subscribe } = writable(Math.round(volume.volume.value));
+export function createVolumeStore(channel: ChannelLight): VolumeStore {
+  const { set, subscribe } = writable(Math.round(channel.volume.value));
 
   const setVolume = (volumeToSet: number) => {
-    volume.set({ volume: Math.round(volumeToSet) });
+    channel.volume.value = Math.round(volumeToSet);
     set(volumeToSet);
   };
 
   const updateVolume = (updater: Updater<number>) => {
-    const newValue = updater(volume.volume.value);
+    const newValue = updater(channel.volume.value);
     setVolume(newValue);
   };
 
