@@ -4,5 +4,5 @@ import { formatDuration } from "../utils";
 
 export const songLength = writable(42);
 export const songLengthReadble = derived(songLength, (length) =>
-  formatDuration(length)
+  formatDuration(length),
 );

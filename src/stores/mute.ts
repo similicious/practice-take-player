@@ -6,7 +6,7 @@ export type MuteStore = Writable<boolean>;
 
 export function createMuteStore(
   volumeStore: VolumeStore,
-  channel: ChannelLight
+  channel: ChannelLight,
 ): MuteStore {
   const { set, subscribe } = writable(channel.mute);
 

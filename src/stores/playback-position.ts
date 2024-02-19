@@ -14,7 +14,7 @@ class PlaybackPostionStore
   setupEvents() {
     this.playingEventId = Tone.Transport.scheduleRepeat(
       this.boundEmitValue,
-      "32n"
+      "32n",
     );
     Tone.Transport.on("stop", this.boundEmitValue);
     Tone.Transport.on("pause", this.boundEmitValue);
@@ -50,5 +50,5 @@ export const playbackPostitionBars = derived(playbackPosition, (pos) => {
   return `${measureBaseOne}:${beatBaseOne}`;
 });
 export const playbackPositionReadble = derived(playbackPosition, (p) =>
-  formatDuration(p)
+  formatDuration(p),
 );
